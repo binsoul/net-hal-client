@@ -1,0 +1,60 @@
+{
+    "name": "binsoul/net-hal-client",
+    "description": "Client for the JSON Hypertext Application Language",
+    "keywords": [
+        "net",
+        "hal",
+        "client"
+    ],
+    "homepage": "https://github.com/binsoul/net-hal-client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Mößler",
+            "email": "s.moeszler@binsoul.de",
+            "homepage": "https://github.com/binsoul",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "ext-json": "*",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0",
+        "rize/uri-template": "^0.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8",
+        "friendsofphp/php-cs-fixer": "^2",
+        "phpstan/phpstan": "^0.12",
+        "php-http/mock-client": "^1.3",
+        "php-http/guzzle6-adapter": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BinSoul\\Net\\Hal\\Client\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BinSoul\\Test\\Net\\Hal\\Client\\": "tests"
+        },
+        "exclude-from-classmap": [
+            "/tests/"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit",
+        "fix-style": [
+            "php-cs-fixer fix src --rules=@Symfony,-yoda_style",
+            "php-cs-fixer fix tests --rules=@Symfony,-yoda_style"
+        ],
+        "analyze": "phpstan analyse -l 7 src"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
