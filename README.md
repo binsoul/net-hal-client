@@ -4,6 +4,10 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Total Downloads][ico-downloads]][link-downloads]
 
+Hypertext Application Language (HAL) is an Internet Draft standard convention for defining hypermedia such as links to external resources within JSON or XML.
+
+This package provides a client to work with HAL+JSON endpoints. It requires a PSR-18 compatible client to send HTTP requests.
+
 ## Install
 
 Via composer:
