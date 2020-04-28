@@ -3,6 +3,7 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 [![Total Downloads][ico-downloads]][link-downloads]
+[![Build Status](https://travis-ci.org/binsoul/net-hal-client.svg?branch=master)](https://travis-ci.org/binsoul/net-hal-client)
 
 Hypertext Application Language (HAL) is an Internet Draft standard convention for defining hypermedia such as links to external resources within JSON or XML.
 
