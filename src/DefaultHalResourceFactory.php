@@ -43,6 +43,12 @@ class DefaultHalResourceFactory implements HalResourceFactory
             );
         }
 
+        foreach ($properties as $key => $value) {
+            if (is_array($value) && (isset($value['_links']) || isset($value['_embedded']))) {
+                $properties[$key] = $this->createResource($value);
+            }
+        }
+
         return new HalResource($properties, $links, $embedded);
     }
 
@@ -65,6 +71,13 @@ class DefaultHalResourceFactory implements HalResourceFactory
                 'hreflang' => null,
             ],
             $data
+        );
+
+        $array = array_map(
+            static function ($entry) {
+                return is_array($entry) || is_object($entry) ? null : $entry;
+            },
+            $array
         );
 
         return new HalLink(
