@@ -43,13 +43,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
             );
         }
 
-        foreach ($properties as $key => $value) {
-            if (is_array($value) && (isset($value['_links']) || isset($value['_embedded']))) {
-                $properties[$key] = $this->createResource($value);
-            }
-        }
-
-        return new HalResource($properties, $links, $embedded);
+        return new HalResource($this->convertEmbeddedResources($properties), $links, $embedded);
     }
 
     /**
@@ -126,5 +120,27 @@ class DefaultHalResourceFactory implements HalResourceFactory
                 return $entry !== null;
             }
         );
+    }
+
+    /**
+     * Converts all array entries containing a "_link" or an "_embedded" key into a resource.
+     *
+     * @return mixed[]
+     */
+    private function convertEmbeddedResources(array $array): array
+    {
+        foreach ($array as $key => $value) {
+            if (!is_array($value)) {
+                continue;
+            }
+
+            if (isset($value['_links']) || isset($value['_embedded'])) {
+                $array[$key] = $this->createResource($value);
+            } else {
+                $array[$key] = $this->convertEmbeddedResources($value);
+            }
+        }
+
+        return $array;
     }
 }
