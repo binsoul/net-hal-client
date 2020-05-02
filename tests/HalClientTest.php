@@ -43,10 +43,10 @@ class HalClientTest extends TestCase
         $this->assertFalse($resource->hasProperty('foobar'));
         $this->assertNull($resource->getProperty('foobar'));
         $this->assertEquals(33, $resource->getProperty('age'));
-        $this->assertEquals(false, $resource->getProperty('expired'));
+        $this->assertFalse($resource->getProperty('expired'));
         $this->assertEquals(123456, $resource->getProperty('id'));
         $this->assertEquals('Example Resource', $resource->getProperty('name'));
-        $this->assertEquals(true, $resource->getProperty('optional'));
+        $this->assertTrue($resource->getProperty('optional'));
 
         $this->assertCount(0, $resource->getResources());
     }
