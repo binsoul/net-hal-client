@@ -10,7 +10,6 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Throwable;
 
@@ -45,28 +44,20 @@ class HalClient
      * @var RequestFactoryInterface
      */
     private $requestFactory;
-    /**
-     * @var UriFactoryInterface
-     */
-    private $uriFactory;
 
     /**
      * Constructs an instance of this class.
-     *
-     * @param string|UriInterface $endPointUri
      */
     public function __construct(
-        $endPointUri,
+        UriInterface $endPointUri,
         HalResourceFactory $halResourceFactory,
         ClientInterface $client,
-        RequestFactoryInterface $requestFactory,
-        UriFactoryInterface $uriFactory
+        RequestFactoryInterface $requestFactory
     ) {
-        $this->endPointUri = $endPointUri instanceof UriInterface ? $endPointUri : $uriFactory->createUri($endPointUri);
+        $this->endPointUri = $endPointUri;
         $this->client = $client;
         $this->resourceFactory = $halResourceFactory;
         $this->requestFactory = $requestFactory;
-        $this->uriFactory = $uriFactory;
     }
 
     /**
