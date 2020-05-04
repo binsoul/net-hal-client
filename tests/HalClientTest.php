@@ -100,7 +100,7 @@ class HalClientTest extends TestCase
         $requestFactory = new RequestFactory();
         $uriFactory = new UriFactory();
 
-        $client = new HalClient('http://localhost/api', $resourceFactory, $client, $requestFactory, $uriFactory);
+        $client = new HalClient($uriFactory->createUri('http://localhost/api'), $resourceFactory, $client, $requestFactory, $uriFactory);
         $client->get('/customer/123456');
     }
 
