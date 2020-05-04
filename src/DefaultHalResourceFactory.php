@@ -126,6 +126,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
      * Converts all array entries containing a "_link" or an "_embedded" key into a resource.
      *
      * @param mixed[] $array
+     *
      * @return mixed[]
      */
     private function convertEmbeddedResources(array $array): array
