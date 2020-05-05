@@ -20,30 +20,37 @@ class HalLink
      * @var string
      */
     private $href;
+
     /**
      * @var bool|null
      */
     private $templated;
+
     /**
      * @var string|null
      */
     private $type;
+
     /**
      * @var string|null
      */
     private $deprecation;
+
     /**
      * @var string|null
      */
     private $name;
+
     /**
      * @var string|null
      */
     private $profile;
+
     /**
      * @var string|null
      */
     private $title;
+
     /**
      * @var string|null
      */

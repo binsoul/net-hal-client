@@ -18,7 +18,7 @@ class HttpClientException extends RuntimeException
     /**
      * HttpClientException constructor.
      */
-    public function __construct(string $message, RequestInterface $request, Throwable $previous = null)
+    public function __construct(string $message, RequestInterface $request, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
 
@@ -30,12 +30,7 @@ class HttpClientException extends RuntimeException
         return $this->request;
     }
 
-    /**
-     * @param null $message
-     *
-     * @return HttpClientException
-     */
-    public static function create(RequestInterface $request, Throwable $previous = null, $message = null): self
+    public static function create(RequestInterface $request, ?Throwable $previous = null, ?string $message = null): self
     {
         if ($message === null) {
             $message = 'Exception thrown by the http client while sending the request.';

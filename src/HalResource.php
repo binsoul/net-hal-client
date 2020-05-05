@@ -13,10 +13,12 @@ class HalResource
      * @var mixed[]
      */
     private $properties;
+
     /**
      * @var HalLink[][]
      */
     private $links;
+
     /**
      * @var HalResource[][]
      */
@@ -68,7 +70,7 @@ class HalResource
     /**
      * Returns a property or null if it doesn't exist.
      *
-     * @return mixed
+     * @return mixed The value of the property
      */
     public function getProperty(string $name)
     {
@@ -109,6 +111,7 @@ class HalResource
     public function getLink(string $rel): array
     {
         $name = $this->resolveLinkRel($rel);
+
         if ($name === null) {
             return [];
         }
@@ -122,6 +125,7 @@ class HalResource
     public function getFirstLink(string $rel): ?HalLink
     {
         $name = $this->resolveLinkRel($rel);
+
         if ($name === null) {
             return null;
         }
@@ -163,6 +167,7 @@ class HalResource
     public function getResource(string $rel): array
     {
         $name = $this->resolveResourceName($rel);
+
         if ($name === null) {
             return [];
         }
@@ -178,65 +183,12 @@ class HalResource
     public function getFirstResource(string $rel): ?self
     {
         $name = $this->resolveResourceName($rel);
+
         if ($name === null) {
             return null;
         }
 
         return $this->embedded[$name][0];
-    }
-
-    /**
-     * Resolves the rel using curies if needed.
-     */
-    private function resolveLinkRel(string $rel): ?string
-    {
-        if (isset($this->links[$rel])) {
-            return $rel;
-        }
-
-        if (!isset($this->links['curies'])) {
-            return null;
-        }
-
-        foreach ($this->getLink('curies') as $curie) {
-            if (!$curie->getName()) {
-                continue;
-            }
-
-            $namespacedRel = $curie->getName().':'.$rel;
-            if (isset($this->links[$namespacedRel])) {
-                return $namespacedRel;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Resolves the name using curies if needed.
-     */
-    private function resolveResourceName(string $name): ?string
-    {
-        if (isset($this->embedded[$name])) {
-            return is_array($this->embedded[$name]) ? $name : null;
-        }
-
-        if (!isset($this->links['curies'])) {
-            return null;
-        }
-
-        foreach ($this->getLink('curies') as $curie) {
-            if (!$curie->getName()) {
-                continue;
-            }
-
-            $namespacedName = $curie->getName().':'.$name;
-            if (isset($this->embedded[$namespacedName])) {
-                return is_array($this->embedded[$namespacedName]) ? $namespacedName : null;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -266,7 +218,7 @@ class HalResource
                 $result['_embedded'][$label] = $item[0]->toArray();
             } else {
                 $result['_embedded'][$label] = array_map(
-                    static function (HalResource $resource) {
+                    static function (self $resource) {
                         return $resource->toArray();
                     },
                     $item
@@ -277,5 +229,61 @@ class HalResource
         $result = array_merge($result, $this->getProperties());
 
         return $result;
+    }
+
+    /**
+     * Resolves the rel using curies if needed.
+     */
+    private function resolveLinkRel(string $rel): ?string
+    {
+        if (isset($this->links[$rel])) {
+            return $rel;
+        }
+
+        if (! isset($this->links['curies'])) {
+            return null;
+        }
+
+        foreach ($this->getLink('curies') as $curie) {
+            if (! $curie->getName()) {
+                continue;
+            }
+
+            $namespacedRel = $curie->getName() . ':' . $rel;
+
+            if (isset($this->links[$namespacedRel])) {
+                return $namespacedRel;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolves the name using curies if needed.
+     */
+    private function resolveResourceName(string $name): ?string
+    {
+        if (isset($this->embedded[$name])) {
+            return is_array($this->embedded[$name]) ? $name : null;
+        }
+
+        if (! isset($this->links['curies'])) {
+            return null;
+        }
+
+        foreach ($this->getLink('curies') as $curie) {
+            if (! $curie->getName()) {
+                continue;
+            }
+
+            $namespacedName = $curie->getName() . ':' . $name;
+
+            if (isset($this->embedded[$namespacedName])) {
+                return is_array($this->embedded[$namespacedName]) ? $namespacedName : null;
+            }
+        }
+
+        return null;
     }
 }

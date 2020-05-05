@@ -16,10 +16,12 @@ class BadResponseException extends RuntimeException
      * @var RequestInterface
      */
     private $request;
+
     /**
      * @var ResponseInterface
      */
     private $response;
+
     /**
      * @var HalResource
      */
@@ -28,7 +30,7 @@ class BadResponseException extends RuntimeException
     /**
      * BadResponseException constructor.
      */
-    public function __construct(string $message, RequestInterface $request, ResponseInterface $response, HalResource $resource, Throwable $previous = null)
+    public function __construct(string $message, RequestInterface $request, ResponseInterface $response, HalResource $resource, ?Throwable $previous = null)
     {
         parent::__construct($message, $response->getStatusCode(), $previous);
 
@@ -37,12 +39,9 @@ class BadResponseException extends RuntimeException
         $this->resource = $resource;
     }
 
-    /**
-     * @return BadResponseException
-     */
-    public static function create(RequestInterface $request, ResponseInterface $response, HalResource $resource, Throwable $previous = null, string $message = null): self
+    public static function create(RequestInterface $request, ResponseInterface $response, HalResource $resource, ?Throwable $previous = null, ?string $message = null): self
     {
-        if (!$message) {
+        if (! $message) {
             $code = $response->getStatusCode();
 
             if ($code >= 400 && $code < 500) {

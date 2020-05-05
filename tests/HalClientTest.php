@@ -21,7 +21,7 @@ class HalClientTest extends TestCase
 {
     public function test_basic(): void
     {
-        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__.'/fixtures/basic.json')));
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/basic.json')));
         $resource = $client->get('/customer/123456');
 
         $this->assertTrue($resource->hasLinks());
@@ -53,7 +53,7 @@ class HalClientTest extends TestCase
 
     public function test_subresource(): void
     {
-        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__.'/fixtures/subresource.json')));
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/subresource.json')));
         $resource = $client->get('/customer/123456');
 
         $this->assertTrue($resource->hasResources());
@@ -66,12 +66,12 @@ class HalClientTest extends TestCase
     {
         $result = [];
 
-        $directory = __DIR__.'/fixtures';
+        $directory = __DIR__ . '/fixtures';
         $files = array_diff(scandir($directory), ['..', '.']);
 
         foreach ($files as $file) {
             $name = str_replace('_', ' ', pathinfo($file, PATHINFO_FILENAME));
-            $content = file_get_contents($directory.'/'.$file);
+            $content = file_get_contents($directory . '/' . $file);
             $result[$name] = [$content];
         }
 
@@ -160,8 +160,6 @@ class HalClientTest extends TestCase
         $requestFactory = new RequestFactory();
         $uriFactory = new UriFactory();
 
-        $client = new HalClient($uriFactory->createUri('http://localhost/api'), $resourceFactory, $client, $requestFactory);
-
-        return $client;
+        return new HalClient($uriFactory->createUri('http://localhost/api'), $resourceFactory, $client, $requestFactory);
     }
 }

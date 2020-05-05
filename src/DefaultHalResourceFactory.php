@@ -89,23 +89,23 @@ class DefaultHalResourceFactory implements HalResourceFactory
     /**
      * Normalizes the given data.
      *
-     * @param mixed $data
+     * @param mixed $data The data to normalize
      *
      * @return mixed[]
      */
     private function normalizeData($data, callable $arrayNormalizer): array
     {
-        if (!$data) {
+        if (! $data) {
             return [];
         }
 
-        if (!isset($data[0]) || !is_array($data)) {
+        if (! is_array($data) || ! isset($data[0])) {
             $data = [$data];
         }
 
         $data = array_map(
             static function ($entry) use ($arrayNormalizer) {
-                if ($entry !== null && !is_array($entry)) {
+                if ($entry !== null && ! is_array($entry)) {
                     $entry = $arrayNormalizer($entry);
                 }
 
@@ -132,7 +132,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
     private function convertEmbeddedResources(array $array): array
     {
         foreach ($array as $key => $value) {
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 

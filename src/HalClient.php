@@ -32,14 +32,17 @@ class HalClient
      * @var ClientInterface
      */
     private $client;
+
     /**
      * @var HalResourceFactory
      */
     private $resourceFactory;
+
     /**
      * @var UriInterface
      */
     private $endPointUri;
+
     /**
      * @var RequestFactoryInterface
      */
@@ -114,6 +117,7 @@ class HalClient
         }
 
         $statusCode = $response->getStatusCode();
+
         if ($statusCode === 204) {
             return $this->resourceFactory->createResource([]);
         }
@@ -133,6 +137,7 @@ class HalClient
         }
 
         $data = [];
+
         if (trim($body) !== '') {
             $data = @json_decode($body, true);
 
@@ -150,7 +155,7 @@ class HalClient
                 return $this->request('GET', $response->getHeader('Location')[0]);
             }
 
-            if (!$this->isValidContentType($response)) {
+            if (! $this->isValidContentType($response)) {
                 $types = $response->getHeader('Content-Type') ?: ['none'];
 
                 throw new BadResponseException(sprintf('Invalid content type: %s.', implode(', ', $types)), $request, $response, $this->resourceFactory->createResource([]));
@@ -176,10 +181,10 @@ class HalClient
     private function createRequest(string $method, string $uri, array $options = []): RequestInterface
     {
         $basePath = $this->endPointUri->getPath();
-        $targetPath = $basePath.'/'.ltrim(str_replace($basePath, '', $uri), '/');
+        $targetPath = $basePath . '/' . ltrim(str_replace($basePath, '', $uri), '/');
 
         $request = $this->requestFactory->createRequest($method, $this->endPointUri->withPath($targetPath))
-            ->withHeader('User-Agent', get_class($this))
+            ->withHeader('User-Agent', static::class)
             ->withHeader('Accept', implode(', ', self::$validContentTypes));
 
         if (isset($options['version'])) {
@@ -189,7 +194,7 @@ class HalClient
         if (isset($options['query'])) {
             $currentUri = $request->getUri();
 
-            if (!is_array($options['query'])) {
+            if (! is_array($options['query'])) {
                 parse_str($options['query'], $options['query']);
             }
 
@@ -212,7 +217,7 @@ class HalClient
                 $body = $options['body'];
             }
 
-            if (!$request->hasHeader('Content-Type')) {
+            if (! $request->hasHeader('Content-Type')) {
                 $request = $request->withHeader('Content-Type', 'application/json');
             }
 
@@ -228,6 +233,7 @@ class HalClient
     private function isValidContentType(ResponseInterface $response): bool
     {
         $contentTypeHeaders = $response->getHeader('Content-Type');
+
         foreach ($contentTypeHeaders as $index => $header) {
             $parts = explode(';', $header);
             $contentTypeHeaders[$index] = $parts[0];
