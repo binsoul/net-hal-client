@@ -31,7 +31,7 @@
         "phpstan/phpstan": "^0.12",
         "php-http/mock-client": "^1",
         "php-http/guzzle6-adapter": "^2",
-        "symplify/easy-coding-standard-prefixed": "^7"
+        "symplify/easy-coding-standard-prefixed": "^8"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +48,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "fix-style": "ecs check src tests --config vendor/binsoul/coding-standard/easy-coding-standard.yaml --fix",
+        "fix-style": "ecs check src tests --config vendor/binsoul/coding-standard/easy-coding-standard.php --fix",
         "analyze": "phpstan analyse -l max src"
     },
     "extra": {
