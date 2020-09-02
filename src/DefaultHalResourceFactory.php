@@ -37,7 +37,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
                 $this->normalizeData(
                     $item,
                     static function ($link) {
-                        return ['href' => $link];
+                        return trim((string) $link) !== '' ? ['href' => $link ] : null;
                     }
                 )
             );
