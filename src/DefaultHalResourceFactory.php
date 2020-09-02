@@ -32,7 +32,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
         }
 
         foreach ($links as $name => $item) {
-            $links[$name] = array_map(
+            $halLink = array_map(
                 [$this, 'createLink'],
                 $this->normalizeData(
                     $item,
@@ -41,6 +41,10 @@ class DefaultHalResourceFactory implements HalResourceFactory
                     }
                 )
             );
+
+            if ($halLink !== null) {
+                $links[$name] = $halLink;
+            }
         }
 
         return new HalResource($this->convertEmbeddedResources($properties), $links, $embedded);
@@ -51,11 +55,14 @@ class DefaultHalResourceFactory implements HalResourceFactory
      *
      * @param mixed[] $data
      */
-    public function createLink(array $data): HalLink
+    public function createLink(array $data): ?HalLink
     {
+        if (!isset($data['href'])) {
+            return null;
+        }
+
         $array = array_replace(
             [
-                'href' => null,
                 'templated' => null,
                 'type' => null,
                 'deprecation' => null,
