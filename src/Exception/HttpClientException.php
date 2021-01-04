@@ -15,9 +15,7 @@ class HttpClientException extends RuntimeException
      */
     private $request;
 
-    /**
-     * HttpClientException constructor.
-     */
+    
     public function __construct(string $message, RequestInterface $request, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);

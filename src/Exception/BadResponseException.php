@@ -27,9 +27,7 @@ class BadResponseException extends RuntimeException
      */
     private $resource;
 
-    /**
-     * BadResponseException constructor.
-     */
+    
     public function __construct(string $message, RequestInterface $request, ResponseInterface $response, HalResource $resource, ?Throwable $previous = null)
     {
         parent::__construct($message, $response->getStatusCode(), $previous);
