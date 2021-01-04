@@ -27,11 +27,11 @@
     "require-dev": {
         "binsoul/coding-standard": "*@dev",
         "http-interop/http-factory-guzzle": "^1",
-        "phpunit/phpunit": "^8",
+        "phpunit/phpunit": "^9",
         "phpstan/phpstan": "^0.12",
         "php-http/mock-client": "^1",
-        "php-http/guzzle6-adapter": "^2",
-        "symplify/easy-coding-standard-prefixed": "^8"
+        "php-http/guzzle7-adapter": "^0.1",
+        "symplify/easy-coding-standard-prefixed": "^9"
     },
     "autoload": {
         "psr-4": {
