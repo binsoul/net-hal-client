@@ -14,9 +14,9 @@ class HalResourceTest extends TestCase
         $factory = new DefaultHalResourceFactory();
         $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
 
-        $this->assertFalse($resource->hasLink('foobar'));
-        $this->assertCount(0, $resource->getLink('foobar'));
-        $this->assertNull($resource->getFirstLink('foobar'));
+        self::assertFalse($resource->hasLink('foobar'));
+        self::assertCount(0, $resource->getLink('foobar'));
+        self::assertNull($resource->getFirstLink('foobar'));
     }
 
     public function test_handles_unknown_subresources(): void
@@ -24,9 +24,9 @@ class HalResourceTest extends TestCase
         $factory = new DefaultHalResourceFactory();
         $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
 
-        $this->assertFalse($resource->hasResource('foobar'));
-        $this->assertCount(0, $resource->getResource('foobar'));
-        $this->assertNull($resource->getFirstResource('foobar'));
+        self::assertFalse($resource->hasResource('foobar'));
+        self::assertCount(0, $resource->getResource('foobar'));
+        self::assertNull($resource->getFirstResource('foobar'));
     }
 
     public function test_handles_missing_curries(): void
@@ -34,13 +34,13 @@ class HalResourceTest extends TestCase
         $factory = new DefaultHalResourceFactory();
         $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/underscored_property.json'), true));
 
-        $this->assertFalse($resource->hasResource('foobar'));
-        $this->assertCount(0, $resource->getResource('foobar'));
-        $this->assertNull($resource->getFirstResource('foobar'));
+        self::assertFalse($resource->hasResource('foobar'));
+        self::assertCount(0, $resource->getResource('foobar'));
+        self::assertNull($resource->getFirstResource('foobar'));
 
-        $this->assertFalse($resource->hasLink('foobar'));
-        $this->assertCount(0, $resource->getLink('foobar'));
-        $this->assertNull($resource->getFirstLink('foobar'));
+        self::assertFalse($resource->hasLink('foobar'));
+        self::assertCount(0, $resource->getLink('foobar'));
+        self::assertNull($resource->getFirstLink('foobar'));
     }
 
     public function test_resolves_subresource_curies(): void
@@ -48,7 +48,7 @@ class HalResourceTest extends TestCase
         $factory = new DefaultHalResourceFactory();
         $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/subresource.json'), true));
 
-        $this->assertTrue($resource->hasResource('user'));
+        self::assertTrue($resource->hasResource('user'));
     }
 
     public function test_resolves_link_curies(): void
@@ -56,8 +56,8 @@ class HalResourceTest extends TestCase
         $factory = new DefaultHalResourceFactory();
         $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
 
-        $this->assertTrue($resource->hasLink('parent'));
-        $this->assertTrue($resource->hasLink('users'));
+        self::assertTrue($resource->hasLink('parent'));
+        self::assertTrue($resource->hasLink('users'));
     }
 
     public function test_is_serializable(): void
@@ -66,6 +66,6 @@ class HalResourceTest extends TestCase
         $data = json_decode(file_get_contents(__DIR__ . '/fixtures/multiple_nested_subresources.json'), true);
         $resource = $factory->createResource($data);
 
-        $this->assertEquals($data, $resource->toArray());
+        self::assertEquals($data, $resource->toArray());
     }
 }

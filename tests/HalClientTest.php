@@ -24,31 +24,31 @@ class HalClientTest extends TestCase
         $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/basic.json')));
         $resource = $client->get('/customer/123456');
 
-        $this->assertTrue($resource->hasLinks());
-        $this->assertCount(4, $resource->getLinks());
+        self::assertTrue($resource->hasLinks());
+        self::assertCount(4, $resource->getLinks());
 
-        $this->assertFalse($resource->hasLink('foobar'));
-        $this->assertCount(0, $resource->getLink('foobar'));
+        self::assertFalse($resource->hasLink('foobar'));
+        self::assertCount(0, $resource->getLink('foobar'));
 
-        $this->assertTrue($resource->hasLink('self'));
-        $this->assertTrue($resource->hasLink('ns:parent'));
-        $this->assertTrue($resource->hasLink('ns:users'));
-        $this->assertTrue($resource->hasLink('curies'));
-        $this->assertCount(2, $resource->getLink('curies'));
-        $this->assertInstanceOf(HalLink::class, $resource->getFirstLink('self'));
+        self::assertTrue($resource->hasLink('self'));
+        self::assertTrue($resource->hasLink('ns:parent'));
+        self::assertTrue($resource->hasLink('ns:users'));
+        self::assertTrue($resource->hasLink('curies'));
+        self::assertCount(2, $resource->getLink('curies'));
+        self::assertInstanceOf(HalLink::class, $resource->getFirstLink('self'));
 
-        $this->assertTrue($resource->hasProperties());
-        $this->assertCount(5, $resource->getProperties());
+        self::assertTrue($resource->hasProperties());
+        self::assertCount(5, $resource->getProperties());
 
-        $this->assertFalse($resource->hasProperty('foobar'));
-        $this->assertNull($resource->getProperty('foobar'));
-        $this->assertEquals(33, $resource->getProperty('age'));
-        $this->assertFalse($resource->getProperty('expired'));
-        $this->assertEquals(123456, $resource->getProperty('id'));
-        $this->assertEquals('Example Resource', $resource->getProperty('name'));
-        $this->assertTrue($resource->getProperty('optional'));
+        self::assertFalse($resource->hasProperty('foobar'));
+        self::assertNull($resource->getProperty('foobar'));
+        self::assertEquals(33, $resource->getProperty('age'));
+        self::assertFalse($resource->getProperty('expired'));
+        self::assertEquals(123456, $resource->getProperty('id'));
+        self::assertEquals('Example Resource', $resource->getProperty('name'));
+        self::assertTrue($resource->getProperty('optional'));
 
-        $this->assertCount(0, $resource->getResources());
+        self::assertCount(0, $resource->getResources());
     }
 
     public function test_subresource(): void
@@ -56,10 +56,10 @@ class HalClientTest extends TestCase
         $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/subresource.json')));
         $resource = $client->get('/customer/123456');
 
-        $this->assertTrue($resource->hasResources());
-        $this->assertCount(1, $resource->getResources());
-        $this->assertCount(1, $resource->getResource('ns:user'));
-        $this->assertInstanceOf(HalResource::class, $resource->getFirstResource('ns:user'));
+        self::assertTrue($resource->hasResources());
+        self::assertCount(1, $resource->getResources());
+        self::assertCount(1, $resource->getResource('ns:user'));
+        self::assertInstanceOf(HalResource::class, $resource->getFirstResource('ns:user'));
     }
 
     public function provideFixtures(): array
@@ -86,7 +86,7 @@ class HalClientTest extends TestCase
         $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], $content));
         $resource = $client->get('/customer/123456');
 
-        $this->assertTrue($resource->hasLink('self'));
+        self::assertTrue($resource->hasLink('self'));
     }
 
     public function test_request_exception(): void
@@ -140,7 +140,7 @@ class HalClientTest extends TestCase
     {
         $client = $this->buildClient(new Response(204, ['Content-Type' => 'application/hal+json'], '{"error": "gone"}'));
         $resource = $client->get('/customer/123456');
-        $this->assertCount(0, $resource->getProperties());
+        self::assertCount(0, $resource->getProperties());
     }
 
     public function test_json_error(): void
