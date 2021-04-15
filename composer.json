@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ^8.0",
         "ext-json": "*",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
@@ -25,12 +25,12 @@
         "rize/uri-template": "^0.3"
     },
     "require-dev": {
-        "binsoul/coding-standard": "*@dev",
+        "binsoul/coding-standard": "^1",
         "http-interop/http-factory-guzzle": "^1",
         "phpunit/phpunit": "^9",
         "phpstan/phpstan": "^0.12",
         "php-http/mock-client": "^1",
-        "php-http/guzzle7-adapter": "^0.1",
+        "php-http/guzzle7-adapter": "^1",
         "symplify/easy-coding-standard-prefixed": "^9"
     },
     "autoload": {
