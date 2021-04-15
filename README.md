@@ -23,7 +23,7 @@ If no factories are supplied, it uses [PHP-HTTP](https://php-http.org) discovery
 For example if you want to use [Guzzle](http://guzzlephp.org) as HTTP client execute:
 
 ``` bash
-$ composer require http-interop/http-factory-guzzle php-http/guzzle6-adapter
+$ composer require http-interop/http-factory-guzzle php-http/guzzle7-adapter
 ```
 
 ## Testing
