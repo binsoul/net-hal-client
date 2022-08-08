@@ -64,7 +64,7 @@ class HalResource
      */
     public function hasProperty(string $name): bool
     {
-        return isset($this->properties[$name]);
+        return array_key_exists($name, $this->properties);
     }
 
     /**
@@ -75,6 +75,16 @@ class HalResource
     public function getProperty(string $name)
     {
         return $this->properties[$name] ?? null;
+    }
+
+    /**
+     * Sets a property.
+     *
+     * @param mixed $value The value of the property
+     */
+    public function setProperty(string $name, $value): void
+    {
+        $this->properties[$name] = $value;
     }
 
     /**
@@ -117,6 +127,22 @@ class HalResource
         }
 
         return $this->links[$name];
+    }
+
+    /**
+     * Sets links for the given rel.
+     *
+     * @param HalLink[] $links
+     */
+    public function setLink(string $rel, array $links): void
+    {
+        $name = $this->resolveLinkRel($rel);
+
+        if ($name === null) {
+            return;
+        }
+
+        $this->links[$name] = $links;
     }
 
     /**
@@ -173,6 +199,22 @@ class HalResource
         }
 
         return $this->embedded[$name];
+    }
+
+    /**
+     * Sets embedded resources for the given rel.
+     *
+     * @param HalResource[] $resources
+     */
+    public function setResource(string $rel, array $resources): void
+    {
+        $name = $this->resolveResourceName($rel);
+
+        if ($name === null) {
+            return;
+        }
+
+        $this->embedded[$name] = $resources;
     }
 
     /**
