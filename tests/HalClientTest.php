@@ -14,6 +14,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Http\Client\Exception\RequestException;
 use Http\Mock\Client;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -62,7 +63,7 @@ class HalClientTest extends TestCase
         self::assertInstanceOf(HalResource::class, $resource->getFirstResource('ns:user'));
     }
 
-    public function provideFixtures(): array
+    public static function provideFixtures(): array
     {
         $result = [];
 
@@ -78,9 +79,7 @@ class HalClientTest extends TestCase
         return $result;
     }
 
-    /**
-     * @dataProvider provideFixtures
-     */
+    #[DataProvider('provideFixtures')]
     public function test_fixtures(string $content): void
     {
         $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], $content));

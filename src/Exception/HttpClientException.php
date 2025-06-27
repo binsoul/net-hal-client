@@ -10,10 +10,7 @@ use Throwable;
 
 class HttpClientException extends RuntimeException
 {
-    /**
-     * @var RequestInterface
-     */
-    private $request;
+    private RequestInterface $request;
 
     public function __construct(string $message, RequestInterface $request, ?Throwable $previous = null)
     {

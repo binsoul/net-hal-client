@@ -21,32 +21,20 @@ class HalClient
     /**
      * @var string[]
      */
-    private static $validContentTypes = [
+    private static array $validContentTypes = [
         'application/hal+json',
         'application/json',
         'application/vnd.error+json',
         'application/problem+json',
     ];
 
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var HalResourceFactory
-     */
-    private $resourceFactory;
+    private HalResourceFactory $resourceFactory;
 
-    /**
-     * @var UriInterface
-     */
-    private $endPointUri;
+    private UriInterface $endPointUri;
 
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs an instance of this class.
@@ -64,7 +52,7 @@ class HalClient
     }
 
     /**
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     public function get(string $uri, array $options = []): HalResource
     {
@@ -74,7 +62,7 @@ class HalClient
     /**
      * Executes a GET-Request and returns the resource.
      *
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     public function post(string $uri, array $options = []): HalResource
     {
@@ -84,7 +72,7 @@ class HalClient
     /**
      * Executes a PUT-Request and returns the resource.
      *
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     public function put(string $uri, array $options = []): HalResource
     {
@@ -94,7 +82,7 @@ class HalClient
     /**
      * Executes a DELETE-Request and returns the resource.
      *
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     public function delete(string $uri, array $options = []): HalResource
     {
@@ -104,7 +92,7 @@ class HalClient
     /**
      * Executes a request with the given HTTP method and returns the resource.
      *
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     public function request(string $method, string $uri, array $options = []): HalResource
     {
@@ -176,7 +164,7 @@ class HalClient
     /**
      * Generates a request object for the given parameters.
      *
-     * @param mixed[] $options
+     * @param array<string, mixed> $options
      */
     private function createRequest(string $method, string $uri, array $options = []): RequestInterface
     {

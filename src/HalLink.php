@@ -11,50 +11,23 @@ use Rize\UriTemplate\UriTemplate;
  */
 class HalLink
 {
-    /**
-     * @var UriTemplate|null
-     */
-    private static $uriTemplate;
+    private static ?UriTemplate $uriTemplate;
 
-    /**
-     * @var string
-     */
-    private $href;
+    private string $href;
 
-    /**
-     * @var bool|null
-     */
-    private $templated;
+    private ?bool $templated;
 
-    /**
-     * @var string|null
-     */
-    private $type;
+    private ?string $type;
 
-    /**
-     * @var string|null
-     */
-    private $deprecation;
+    private ?string $deprecation;
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name;
 
-    /**
-     * @var string|null
-     */
-    private $profile;
+    private ?string $profile;
 
-    /**
-     * @var string|null
-     */
-    private $title;
+    private ?string $title;
 
-    /**
-     * @var string|null
-     */
-    private $hreflang;
+    private ?string $hreflang;
 
     /**
      * Constructs an instance of this class.
@@ -82,7 +55,7 @@ class HalLink
     /**
      * Returns the expanded URI.
      *
-     * @param mixed[] $variables
+     * @param array<string, mixed> $variables
      */
     public function getUri(array $variables = []): string
     {
@@ -234,7 +207,7 @@ class HalLink
     /**
      * Serializes this link to an array.
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -252,7 +225,7 @@ class HalLink
     /**
      * Expands the URI template with the given variables.
      *
-     * @param mixed[] $variables
+     * @param array<string, mixed> $variables
      */
     private static function expandUriTemplate(string $template, array $variables): string
     {

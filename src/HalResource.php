@@ -10,24 +10,24 @@ namespace BinSoul\Net\Hal\Client;
 class HalResource
 {
     /**
-     * @var mixed[]
+     * @var array<string, mixed>
      */
-    private $properties;
+    private array $properties;
 
     /**
      * @var HalLink[][]
      */
-    private $links;
+    private array $links;
 
     /**
      * @var HalResource[][]
      */
-    private $embedded;
+    private array $embedded;
 
     /**
      * Constructs an instance of this class.
      *
-     * @param mixed[]         $properties
+     * @param array<string, mixed>         $properties
      * @param HalLink[][]     $links
      * @param HalResource[][] $embedded
      */
@@ -52,7 +52,7 @@ class HalResource
     /**
      * Returns all properties of the resource.
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function getProperties(): array
     {
@@ -72,7 +72,7 @@ class HalResource
      *
      * @return mixed The value of the property
      */
-    public function getProperty(string $name)
+    public function getProperty(string $name): mixed
     {
         return $this->properties[$name] ?? null;
     }
@@ -82,7 +82,7 @@ class HalResource
      *
      * @param mixed $value The value of the property
      */
-    public function setProperty(string $name, $value): void
+    public function setProperty(string $name, mixed $value): void
     {
         $this->properties[$name] = $value;
     }
@@ -219,8 +219,6 @@ class HalResource
 
     /**
      * Returns the first embedded resources for the given rel or null if ist doesn't exist.
-     *
-     * @return HalResource|null
      */
     public function getFirstResource(string $rel): ?self
     {
@@ -236,7 +234,7 @@ class HalResource
     /**
      * Serializes the resource to an array.
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -268,9 +266,7 @@ class HalResource
             }
         }
 
-        $result = array_merge($result, $this->getProperties());
-
-        return $result;
+        return array_merge($result, $this->getProperties());
     }
 
     /**

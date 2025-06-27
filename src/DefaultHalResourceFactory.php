@@ -53,7 +53,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
     /**
      * Builds a link with the given data.
      *
-     * @param mixed[] $data
+     * @param array<string, mixed> $data
      */
     public function createLink(array $data): ?HalLink
     {
@@ -98,9 +98,9 @@ class DefaultHalResourceFactory implements HalResourceFactory
      *
      * @param mixed $data The data to normalize
      *
-     * @return mixed[]
+     * @return array<int, mixed>
      */
-    private function normalizeData($data, callable $arrayNormalizer): array
+    private function normalizeData(mixed $data, callable $arrayNormalizer): array
     {
         if (! $data) {
             return [];
@@ -132,9 +132,9 @@ class DefaultHalResourceFactory implements HalResourceFactory
     /**
      * Converts all array entries containing a "_link" or an "_embedded" key into a resource.
      *
-     * @param mixed[] $array
+     * @param array<string, mixed> $array
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     private function convertEmbeddedResources(array $array): array
     {
