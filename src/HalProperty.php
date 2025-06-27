@@ -32,7 +32,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : string)
+     * @return ($default is null ? string|null : string)
      */
     public function asString(?string $default = null): ?string
     {
@@ -52,7 +52,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : int)
+     * @return ($default is null ? int|null : int)
      */
     public function asInt(?int $default = null): ?int
     {
@@ -76,7 +76,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : float)
+     * @return ($default is null ? float|null : float)
      */
     public function asFloat(?float $default = null): ?float
     {
@@ -100,7 +100,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : bool)
+     * @return ($default is null ? bool|null : bool)
      */
     public function asBool(?bool $default = null): ?bool
     {
@@ -120,7 +120,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : array)
+     * @return ($default is null ? array|null : array)
      */
     public function asArray(?array $default = null): ?array
     {
@@ -140,7 +140,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : object)
+     * @return ($default is null ? object|null : object)
      */
     public function asObject(?object $default = null): ?object
     {
@@ -160,7 +160,7 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? null : DateTime)
+     * @return ($default is null ? DateTime|null : DateTime)
      */
     public function asDateTime(?DateTime $default = null): ?DateTime
     {
