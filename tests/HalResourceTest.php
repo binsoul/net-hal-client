@@ -182,4 +182,40 @@ class HalResourceTest extends TestCase
         self::assertCount(1, $resource->getResource('overwrite'));
         self::assertSame($newResource, $resource->getResource('overwrite')[0]);
     }
+    /**
+     * Tests retrieving a property object when the property exists.
+     */
+    public function test_get_value_when_property_exists(): void
+    {
+        $resource = new HalResource(['key' => 'value']);
+        $propertyObject = $resource->getValue('key');
+
+        self::assertEquals('key', $propertyObject->getName());
+        self::assertEquals('value', $propertyObject->asMixed());
+    }
+
+    /**
+     * Tests retrieving a property object when the property does not exist.
+     */
+    public function test_get_value_when_property_does_not_exist(): void
+    {
+        $resource = new HalResource();
+        $propertyObject = $resource->getValue('nonexistent');
+
+        self::assertEquals('nonexistent', $propertyObject->getName());
+        self::assertNull($propertyObject->asMixed());
+    }
+
+    /**
+     * Tests retrieving a property object with a complex value.
+     */
+    public function test_get_value_with_complex_value(): void
+    {
+        $complexValue = ['nestedKey' => 'nestedValue'];
+        $resource = new HalResource(['key' => $complexValue]);
+        $propertyObject = $resource->getValue('key');
+
+        self::assertEquals('key', $propertyObject->getName());
+        self::assertEquals($complexValue, $propertyObject->asMixed());
+    }
 }

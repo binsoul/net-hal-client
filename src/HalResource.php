@@ -88,6 +88,16 @@ class HalResource
     }
 
     /**
+     * Returns a property object.
+     *
+     * @return HalProperty The object for the property
+     */
+    public function getValue(string $name): HalProperty
+    {
+        return new HalProperty($name, $this->properties[$name] ?? null);
+    }
+
+    /**
      * Indicates if the resource has links.
      */
     public function hasLinks(): bool
