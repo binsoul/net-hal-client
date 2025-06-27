@@ -42,7 +42,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
                 )
             );
 
-            if ($halLink !== null) {
+            if ($halLink !== []) {
                 $links[$name] = $halLink;
             }
         }
