@@ -211,13 +211,11 @@ class HalLink
      */
     public function toArray(): array
     {
-        $result = [];
+        $result = array_filter(get_object_vars($this), static function ($val) {
+            return $val !== null;
+        });
 
-        foreach (get_object_vars($this) as $attr => $val) {
-            if ($val !== null) {
-                $result[$attr] = $val;
-            }
-        }
+        unset($result['uriTemplate']);
 
         return $result;
     }
