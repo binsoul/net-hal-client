@@ -129,9 +129,9 @@ class HalClient
         if (trim($body) !== '') {
             try {
                 $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-            } catch (Throwable) {
+            } catch (Throwable $throwable) {
                 if ($this->isValidContentType($response)) {
-                    throw new BadResponseException(sprintf('JSON parse error: %s.', json_last_error_msg()), $request, $response, $this->resourceFactory->createResource([]));
+                    throw new BadResponseException(sprintf('JSON parse error: %s.', $throwable->getMessage()), $request, $response, $this->resourceFactory->createResource([]));
                 }
 
                 $data = [];

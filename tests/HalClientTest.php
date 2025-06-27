@@ -150,10 +150,120 @@ class HalClientTest extends TestCase
         $client->get('/customer/123456');
     }
 
-    private function buildClient(ResponseInterface $response): HalClient
+    /**
+     * Tests that the createRequest method correctly processes query parameters.
+     */
+    public function test_create_request_with_version(): void
+    {
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->get('/test/query', ['version' => '1.3']);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the createRequest method correctly processes query parameters.
+     */
+    public function test_create_request_with_query_params(): void
+    {
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->get('/test/query', ['query' => ['key' => 'value']]);
+        self::assertTrue($resource->hasProperty('abc'));
+
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->get('/test/query', ['query' => 'key=value']);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the createRequest method correctly processes request bodies.
+     */
+    public function test_create_request_with_body(): void
+    {
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->put('/test/body', ['body' => 'test']);
+        self::assertTrue($resource->hasProperty('abc'));
+
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->post('/test/body', ['body' => ['field' => 'value']]);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the createRequest method correctly processes request headers.
+     */
+    public function test_create_request_with_headers(): void
+    {
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $resource = $client->delete('/test/headers', ['headers' => ['field' => 'value']]);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the createRequest method throws an exception for an invalid body.
+     */
+    public function test_create_request_with_invalid_body(): void
+    {
+        $this->expectException(HttpClientException::class);
+
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}'));
+        $client->post('/test/invalid-body', ['body' => ['abc' => NAN]]);
+    }
+
+    /**
+     * Tests that the client handles a 201 Created response followed by a 200 OK response properly.
+     */
+    public function test_response_with_201(): void
+    {
+        $client = $this->buildClient(
+            [new Response(201, ['Content-Type' => 'application/hal+json', 'Location' => 'redirect']),
+            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+        );
+
+        $resource = $client->post('/test/post', ['body' => ['abc' => 'def']]);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the client handles a 301 Created response followed by a 200 OK response properly.
+     */
+    public function test_response_with_301(): void
+    {
+        $client = $this->buildClient(
+            [new Response(301, ['Content-Type' => 'application/hal+json', 'Location' => 'redirect']),
+            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+        );
+
+        $resource = $client->get('/test/redirect', ['body' => ['abc' => 'def']]);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    /**
+     * Tests that the client handles a 301 Created response without Location header.
+     */
+    public function test_response_with_301_but_no_location(): void
+    {
+        $this->expectException(BadResponseException::class);
+
+        $client = $this->buildClient(
+            [new Response(301, ['Content-Type' => 'application/hal+json']),
+            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+        );
+
+        $resource = $client->get('/test/redirect', ['body' => ['abc' => 'def']]);
+        self::assertTrue($resource->hasProperty('abc'));
+    }
+
+    private function buildClient(ResponseInterface|array $response): HalClient
     {
         $client = new Client();
-        $client->addResponse($response);
+        if (is_array($response)) {
+            foreach ($response as $r) {
+                $client->addResponse($r);
+            }
+        } else {
+            $client->addResponse($response);
+        }
+
 
         $resourceFactory = new DefaultHalResourceFactory();
         $requestFactory = new RequestFactory();
@@ -161,4 +271,5 @@ class HalClientTest extends TestCase
 
         return new HalClient($uriFactory->createUri('http://localhost/api'), $resourceFactory, $client, $requestFactory);
     }
+
 }

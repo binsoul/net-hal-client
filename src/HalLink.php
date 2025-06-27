@@ -11,7 +11,7 @@ use Rize\UriTemplate\UriTemplate;
  */
 class HalLink
 {
-    private static ?UriTemplate $uriTemplate;
+    private static ?UriTemplate $uriTemplate = null;
 
     private string $href;
 
@@ -214,8 +214,6 @@ class HalLink
         $result = array_filter(get_object_vars($this), static function ($val) {
             return $val !== null;
         });
-
-        unset($result['uriTemplate']);
 
         return $result;
     }

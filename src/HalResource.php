@@ -27,9 +27,9 @@ class HalResource
     /**
      * Constructs an instance of this class.
      *
-     * @param array<string, mixed>         $properties
-     * @param HalLink[][]     $links
-     * @param HalResource[][] $embedded
+     * @param array<string, mixed> $properties
+     * @param HalLink[][]          $links
+     * @param HalResource[][]      $embedded
      */
     public function __construct(
         array $properties = [],
@@ -139,7 +139,7 @@ class HalResource
         $name = $this->resolveLinkRel($rel);
 
         if ($name === null) {
-            return;
+            $name = $rel;
         }
 
         $this->links[$name] = $links;
@@ -211,7 +211,7 @@ class HalResource
         $name = $this->resolveResourceName($rel);
 
         if ($name === null) {
-            return;
+            $name = $rel;
         }
 
         $this->embedded[$name] = $resources;
