@@ -127,9 +127,9 @@ class HalClient
         $data = [];
 
         if (trim($body) !== '') {
-            $data = @json_decode($body, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
+            try {
+                $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            } catch (Throwable) {
                 if ($this->isValidContentType($response)) {
                     throw new BadResponseException(sprintf('JSON parse error: %s.', json_last_error_msg()), $request, $response, $this->resourceFactory->createResource([]));
                 }
@@ -200,7 +200,11 @@ class HalClient
 
         if (isset($options['body'])) {
             if (is_array($options['body']) || is_object($options['body'])) {
-                $body = @json_encode($options['body']);
+                try {
+                    $body = json_encode($options['body'], JSON_THROW_ON_ERROR);
+                } catch (Throwable $throwable) {
+                    throw HttpClientException::create($request, $throwable);
+                }
             } else {
                 $body = $options['body'];
             }
