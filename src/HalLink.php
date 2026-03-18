@@ -62,7 +62,7 @@ class HalLink
         $uri = $this->href;
 
         if ($this->templated) {
-            $uri = self::expandUriTemplate($uri, $variables);
+            $uri = $this->expandUriTemplate($uri, $variables);
         }
 
         return $uri;
@@ -211,11 +211,10 @@ class HalLink
      */
     public function toArray(): array
     {
-        $result = array_filter(get_object_vars($this), static function ($val) {
-            return $val !== null;
-        });
+        /** @var array<string, mixed> $vars */
+        $vars = get_object_vars($this);
 
-        return $result;
+        return array_filter($vars, static fn ($val): bool => $val !== null);
     }
 
     /**
@@ -223,7 +222,7 @@ class HalLink
      *
      * @param array<string, mixed> $variables
      */
-    private static function expandUriTemplate(string $template, array $variables): string
+    private function expandUriTemplate(string $template, array $variables): string
     {
         if (self::$uriTemplate === null) {
             self::$uriTemplate = new UriTemplate();

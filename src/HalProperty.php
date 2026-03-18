@@ -40,15 +40,11 @@ readonly class HalProperty
             return $default;
         }
 
-        if (is_string($this->value)) {
-            return $this->value;
+        if (is_string($this->value) || is_scalar($this->value)) {
+            return (string) $this->value;
         }
 
-        if (is_object($this->value) || is_array($this->value)) {
-            return $default;
-        }
-
-        return (string) $this->value;
+        return $default;
     }
 
     /**
@@ -60,19 +56,15 @@ readonly class HalProperty
             return $default;
         }
 
-        if (is_int($this->value)) {
-            return $this->value;
+        if (is_float($this->value) || is_int($this->value)) {
+            return (int) $this->value;
         }
 
-        if (is_object($this->value) || is_array($this->value)) {
-            return $default;
+        if (is_string($this->value) && is_numeric($this->value)) {
+            return (int) $this->value;
         }
 
-        if (is_string($this->value) && ! is_numeric($this->value)) {
-            return $default;
-        }
-
-        return (int) $this->value;
+        return $default;
     }
 
     /**
@@ -84,19 +76,15 @@ readonly class HalProperty
             return $default;
         }
 
-        if (is_float($this->value)) {
-            return $this->value;
+        if (is_float($this->value) || is_int($this->value)) {
+            return (float) $this->value;
         }
 
-        if (is_string($this->value) && ! is_numeric($this->value)) {
-            return $default;
+        if (is_string($this->value) && is_numeric($this->value)) {
+            return (float) $this->value;
         }
 
-        if (is_object($this->value) || is_array($this->value)) {
-            return $default;
-        }
-
-        return (float) $this->value;
+        return $default;
     }
 
     /**
@@ -120,7 +108,9 @@ readonly class HalProperty
     }
 
     /**
-     * @return ($default is null ? array|null : array)
+     * @param array<array-key, mixed>|null $default
+     *
+     * @return ($default is null ? array<array-key, mixed>|null : array<array-key, mixed>)
      */
     public function asArray(?array $default = null): ?array
     {
@@ -171,7 +161,7 @@ readonly class HalProperty
         }
 
         try {
-            return new DateTime($this->value);
+            return new DateTime($value);
         } catch (Throwable) {
             return $default;
         }

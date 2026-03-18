@@ -28,13 +28,13 @@ class HalClient
         'application/problem+json',
     ];
 
-    private ClientInterface $client;
+    private readonly ClientInterface $client;
 
-    private HalResourceFactory $resourceFactory;
+    private readonly HalResourceFactory $resourceFactory;
 
-    private UriInterface $endPointUri;
+    private readonly UriInterface $endPointUri;
 
-    private RequestFactoryInterface $requestFactory;
+    private readonly RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs an instance of this class.
@@ -52,7 +52,7 @@ class HalClient
     }
 
     /**
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     public function get(string $uri, array $options = []): HalResource
     {
@@ -62,7 +62,7 @@ class HalClient
     /**
      * Executes a GET-Request and returns the resource.
      *
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     public function post(string $uri, array $options = []): HalResource
     {
@@ -72,7 +72,7 @@ class HalClient
     /**
      * Executes a PUT-Request and returns the resource.
      *
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     public function put(string $uri, array $options = []): HalResource
     {
@@ -82,7 +82,7 @@ class HalClient
     /**
      * Executes a DELETE-Request and returns the resource.
      *
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     public function delete(string $uri, array $options = []): HalResource
     {
@@ -92,7 +92,7 @@ class HalClient
     /**
      * Executes a request with the given HTTP method and returns the resource.
      *
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     public function request(string $method, string $uri, array $options = []): HalResource
     {
@@ -100,8 +100,8 @@ class HalClient
 
         try {
             $response = $this->client->sendRequest($request);
-        } catch (Throwable $e) {
-            throw HttpClientException::create($request, $e);
+        } catch (Throwable $throwable) {
+            throw HttpClientException::create($request, $throwable);
         }
 
         $statusCode = $response->getStatusCode();
@@ -120,14 +120,15 @@ class HalClient
 
         try {
             $body = $response->getBody()->getContents();
-        } catch (Throwable $e) {
-            throw new BadResponseException(sprintf('Error getting response body: %s.', $e->getMessage()), $request, $response, $this->resourceFactory->createResource([]), $e);
+        } catch (Throwable $throwable) {
+            throw new BadResponseException(sprintf('Error getting response body: %s.', $throwable->getMessage()), $request, $response, $this->resourceFactory->createResource([]), $throwable);
         }
 
         $data = [];
 
         if (trim($body) !== '') {
             try {
+                /** @var array<string,mixed> $data */
                 $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
             } catch (Throwable $throwable) {
                 if ($this->isValidContentType($response)) {
@@ -139,7 +140,7 @@ class HalClient
         }
 
         if ($statusCode >= 200 && $statusCode < 300) {
-            if ($statusCode === 201 && count($data) === 0 && $response->hasHeader('Location')) {
+            if ($statusCode === 201 && $data === [] && $response->hasHeader('Location')) {
                 return $this->request('GET', $response->getHeader('Location')[0]);
             }
 
@@ -164,7 +165,7 @@ class HalClient
     /**
      * Generates a request object for the given parameters.
      *
-     * @param array<string, mixed> $options
+     * @param array{version?: string, query?: array<string, mixed>|string, headers?: array<string, string|string[]>, body?: mixed} $options
      */
     private function createRequest(string $method, string $uri, array $options = []): RequestInterface
     {
@@ -213,7 +214,9 @@ class HalClient
                 $request = $request->withHeader('Content-Type', 'application/json');
             }
 
-            $request->getBody()->write($body);
+            if (is_scalar($body)) {
+                $request->getBody()->write((string) $body);
+            }
         }
 
         return $request;

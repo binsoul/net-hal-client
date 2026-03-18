@@ -12,11 +12,11 @@ use Throwable;
 
 class BadResponseException extends RuntimeException
 {
-    private RequestInterface $request;
+    private readonly RequestInterface $request;
 
-    private ResponseInterface $response;
+    private readonly ResponseInterface $response;
 
-    private HalResource $resource;
+    private readonly HalResource $resource;
 
     public function __construct(string $message, RequestInterface $request, ResponseInterface $response, HalResource $resource, ?Throwable $previous = null)
     {

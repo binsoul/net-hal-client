@@ -8,13 +8,22 @@ use BinSoul\Net\Hal\Client\DefaultHalResourceFactory;
 use BinSoul\Net\Hal\Client\HalLink;
 use BinSoul\Net\Hal\Client\HalResource;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class HalResourceTest extends TestCase
 {
     public function test_handles_unknown_links(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
+        $content = file_get_contents(__DIR__ . '/fixtures/basic.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $resource = $factory->createResource($data);
 
         self::assertFalse($resource->hasLink('foobar'));
         self::assertCount(0, $resource->getLink('foobar'));
@@ -24,7 +33,15 @@ class HalResourceTest extends TestCase
     public function test_handles_unknown_subresources(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
+        $content = file_get_contents(__DIR__ . '/fixtures/basic.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $resource = $factory->createResource($data);
 
         self::assertFalse($resource->hasResource('foobar'));
         self::assertCount(0, $resource->getResource('foobar'));
@@ -34,7 +51,15 @@ class HalResourceTest extends TestCase
     public function test_handles_missing_curries(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/underscored_property.json'), true));
+        $content = file_get_contents(__DIR__ . '/fixtures/underscored_property.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $resource = $factory->createResource($data);
 
         self::assertFalse($resource->hasResource('foobar'));
         self::assertCount(0, $resource->getResource('foobar'));
@@ -48,7 +73,15 @@ class HalResourceTest extends TestCase
     public function test_resolves_subresource_curies(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/subresource.json'), true));
+        $content = file_get_contents(__DIR__ . '/fixtures/subresource.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $resource = $factory->createResource($data);
 
         self::assertTrue($resource->hasResource('user'));
     }
@@ -56,7 +89,15 @@ class HalResourceTest extends TestCase
     public function test_resolves_link_curies(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $resource = $factory->createResource(json_decode(file_get_contents(__DIR__ . '/fixtures/basic.json'), true));
+        $content = file_get_contents(__DIR__ . '/fixtures/basic.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        $resource = $factory->createResource($data);
 
         self::assertTrue($resource->hasLink('parent'));
         self::assertTrue($resource->hasLink('users'));
@@ -65,7 +106,14 @@ class HalResourceTest extends TestCase
     public function test_is_serializable(): void
     {
         $factory = new DefaultHalResourceFactory();
-        $data = json_decode(file_get_contents(__DIR__ . '/fixtures/multiple_nested_subresources.json'), true);
+        $content = file_get_contents(__DIR__ . '/fixtures/multiple_nested_subresources.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         $resource = $factory->createResource($data);
 
         self::assertEquals($data, $resource->toArray());
@@ -94,13 +142,14 @@ class HalResourceTest extends TestCase
 
         self::assertTrue($resource->hasProperty('key'));
     }
+
     /**
      * Tests the setLink method for setting and retrieving links.
      */
     public function test_set_and_get_link(): void
     {
-        $link1 = $this->createMock(HalLink::class);
-        $link2 = $this->createMock(HalLink::class);
+        $link1 = $this->createStub(HalLink::class);
+        $link2 = $this->createStub(HalLink::class);
 
         $resource = new HalResource();
         $resource->setLink('example', [$link1, $link2]);
@@ -128,8 +177,8 @@ class HalResourceTest extends TestCase
      */
     public function test_set_link_overwrites_existing_links(): void
     {
-        $originalLink = $this->createMock(HalLink::class);
-        $newLink = $this->createMock(HalLink::class);
+        $originalLink = $this->createStub(HalLink::class);
+        $newLink = $this->createStub(HalLink::class);
 
         $resource = new HalResource();
         $resource->setLink('overwrite', [$originalLink]);
@@ -138,13 +187,14 @@ class HalResourceTest extends TestCase
         self::assertCount(1, $resource->getLink('overwrite'));
         self::assertSame($newLink, $resource->getLink('overwrite')[0]);
     }
+
     /**
      * Tests that resources can be set and retrieved for a specific relationship.
      */
     public function test_set_and_get_resource(): void
     {
-        $resource1 = $this->createMock(HalResource::class);
-        $resource2 = $this->createMock(HalResource::class);
+        $resource1 = $this->createStub(HalResource::class);
+        $resource2 = $this->createStub(HalResource::class);
 
         $resource = new HalResource();
         $resource->setResource('example', [$resource1, $resource2]);
@@ -172,8 +222,8 @@ class HalResourceTest extends TestCase
      */
     public function test_set_resource_overwrites_existing_resources(): void
     {
-        $originalResource = $this->createMock(HalResource::class);
-        $newResource = $this->createMock(HalResource::class);
+        $originalResource = $this->createStub(HalResource::class);
+        $newResource = $this->createStub(HalResource::class);
 
         $resource = new HalResource();
         $resource->setResource('overwrite', [$originalResource]);
@@ -182,6 +232,7 @@ class HalResourceTest extends TestCase
         self::assertCount(1, $resource->getResource('overwrite'));
         self::assertSame($newResource, $resource->getResource('overwrite')[0]);
     }
+
     /**
      * Tests retrieving a property object when the property exists.
      */

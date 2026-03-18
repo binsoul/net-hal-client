@@ -46,7 +46,7 @@ class HalResource
      */
     public function hasProperties(): bool
     {
-        return count($this->properties) > 0;
+        return $this->properties !== [];
     }
 
     /**
@@ -102,7 +102,7 @@ class HalResource
      */
     public function hasLinks(): bool
     {
-        return count($this->links) > 0;
+        return $this->links !== [];
     }
 
     /**
@@ -174,7 +174,7 @@ class HalResource
      */
     public function hasResources(): bool
     {
-        return count($this->embedded) > 0;
+        return $this->embedded !== [];
     }
 
     /**
@@ -255,9 +255,7 @@ class HalResource
                 $result['_links'][$label] = $item[0]->toArray();
             } else {
                 $result['_links'][$label] = array_map(
-                    static function (HalLink $link) {
-                        return $link->toArray();
-                    },
+                    static fn (HalLink $link): array => $link->toArray(),
                     $item
                 );
             }
@@ -268,9 +266,7 @@ class HalResource
                 $result['_embedded'][$label] = $item[0]->toArray();
             } else {
                 $result['_embedded'][$label] = array_map(
-                    static function (self $resource) {
-                        return $resource->toArray();
-                    },
+                    static fn (self $resource): array => $resource->toArray(),
                     $item
                 );
             }

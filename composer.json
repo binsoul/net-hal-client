@@ -25,12 +25,15 @@
         "rize/uri-template": "^0.3 | ^0.4"
     },
     "require-dev": {
-        "binsoul/coding-standard": "^1",
+        "binsoul/coding-standard": "^2",
         "http-interop/http-factory-guzzle": "^1",
-        "phpunit/phpunit": "^12",
-        "phpstan/phpstan": "^2",
         "php-http/mock-client": "^1",
-        "php-http/guzzle7-adapter": "^1"
+        "php-http/guzzle7-adapter": "^1",
+        "phpstan/phpstan": "^2",
+        "phpstan/phpstan-symfony": "^2",
+        "phpunit/phpunit": "^12",
+        "rector/rector": "^2",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
@@ -47,8 +50,8 @@
     },
     "scripts": {
         "test": "phpunit",
-        "fix-style": "ecs check src --config vendor/binsoul/coding-standard/easy-coding-standard.php --fix",
-        "analyze": "phpstan analyse -l max src"
+        "fix-style": "ecs check src tests --config vendor/binsoul/coding-standard/easy-coding-standard.php --fix",
+        "analyze": "phpstan analyse -l max src tests"
     },
     "extra": {
         "branch-alias": {

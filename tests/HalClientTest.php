@@ -17,12 +17,19 @@ use Http\Mock\Client;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 class HalClientTest extends TestCase
 {
     public function test_basic(): void
     {
-        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/basic.json')));
+        $content = file_get_contents(__DIR__ . '/fixtures/basic.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], $content));
         $resource = $client->get('/customer/123456');
 
         self::assertTrue($resource->hasLinks());
@@ -54,7 +61,13 @@ class HalClientTest extends TestCase
 
     public function test_subresource(): void
     {
-        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], file_get_contents(__DIR__ . '/fixtures/subresource.json')));
+        $content = file_get_contents(__DIR__ . '/fixtures/subresource.json');
+
+        if ($content === false) {
+            throw new RuntimeException('Fixture not found');
+        }
+
+        $client = $this->buildClient(new Response(200, ['Content-Type' => 'application/hal+json'], $content));
         $resource = $client->get('/customer/123456');
 
         self::assertTrue($resource->hasResources());
@@ -63,6 +76,9 @@ class HalClientTest extends TestCase
         self::assertInstanceOf(HalResource::class, $resource->getFirstResource('ns:user'));
     }
 
+    /**
+     * @return array<string, array{string}>
+     */
     public static function provideFixtures(): array
     {
         $result = [];
@@ -73,6 +89,11 @@ class HalClientTest extends TestCase
         foreach ($files as $file) {
             $name = str_replace('_', ' ', pathinfo($file, PATHINFO_FILENAME));
             $content = file_get_contents($directory . '/' . $file);
+
+            if ($content === false) {
+                continue;
+            }
+
             $result[$name] = [$content];
         }
 
@@ -216,7 +237,7 @@ class HalClientTest extends TestCase
     {
         $client = $this->buildClient(
             [new Response(201, ['Content-Type' => 'application/hal+json', 'Location' => 'redirect']),
-            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+                new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
         );
 
         $resource = $client->post('/test/post', ['body' => ['abc' => 'def']]);
@@ -230,7 +251,7 @@ class HalClientTest extends TestCase
     {
         $client = $this->buildClient(
             [new Response(301, ['Content-Type' => 'application/hal+json', 'Location' => 'redirect']),
-            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+                new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
         );
 
         $resource = $client->get('/test/redirect', ['body' => ['abc' => 'def']]);
@@ -246,16 +267,20 @@ class HalClientTest extends TestCase
 
         $client = $this->buildClient(
             [new Response(301, ['Content-Type' => 'application/hal+json']),
-            new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
+                new Response(200, ['Content-Type' => 'application/hal+json'], '{"abc": true}')]
         );
 
         $resource = $client->get('/test/redirect', ['body' => ['abc' => 'def']]);
         self::assertTrue($resource->hasProperty('abc'));
     }
 
+    /**
+     * @param ResponseInterface|array<ResponseInterface> $response
+     */
     private function buildClient(ResponseInterface|array $response): HalClient
     {
         $client = new Client();
+
         if (is_array($response)) {
             foreach ($response as $r) {
                 $client->addResponse($r);
@@ -264,12 +289,10 @@ class HalClientTest extends TestCase
             $client->addResponse($response);
         }
 
-
         $resourceFactory = new DefaultHalResourceFactory();
         $requestFactory = new RequestFactory();
         $uriFactory = new UriFactory();
 
         return new HalClient($uriFactory->createUri('http://localhost/api'), $resourceFactory, $client, $requestFactory);
     }
-
 }

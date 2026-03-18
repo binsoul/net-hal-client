@@ -12,42 +12,45 @@ class DefaultHalResourceFactory implements HalResourceFactory
     public function createResource(array $data): HalResource
     {
         $array = $data;
+        /** @var array<string, mixed> $links */
         $links = $array['_links'] ?? [];
+        /** @var array<string, mixed> $embedded */
         $embedded = $array['_embedded'] ?? [];
 
         unset($array['_links'], $array['_embedded']);
 
         $properties = $array;
 
+        $embeddedResources = [];
+
         foreach ($embedded as $name => $item) {
-            $embedded[$name] = array_map(
-                [$this, 'createResource'],
-                $this->normalizeData(
-                    $item,
-                    static function ($resource) {
-                        return [$resource];
-                    }
-                )
+            /** @var array<array-key, array<string, mixed>> $normalizedData */
+            $normalizedData = $this->normalizeData(
+                $item,
+                static fn ($resource): array => ['id' => $resource]
             );
+
+            $embeddedResources[$name] = array_map($this->createResource(...), $normalizedData);
         }
 
+        $embeddedLinks = [];
+
         foreach ($links as $name => $item) {
-            $halLink = array_map(
-                [$this, 'createLink'],
-                $this->normalizeData(
-                    $item,
-                    static function ($link) {
-                        return trim((string) $link) !== '' ? ['href' => $link] : null;
-                    }
-                )
+            /** @var array<array-key, array<string, mixed>> $normalizedData */
+            $normalizedData = $this->normalizeData(
+                $item,
+                static fn (mixed $link): array => trim(is_scalar($link) ? (string) $link : '') !== '' ? ['href' => $link] : []
             );
 
+            $halLink = array_map($this->createLink(...), $normalizedData);
+            $halLink = array_filter($halLink, static fn (?HalLink $entry): bool => $entry !== null);
+
             if ($halLink !== []) {
-                $links[$name] = $halLink;
+                $embeddedLinks[$name] = $halLink;
             }
         }
 
-        return new HalResource($this->convertEmbeddedResources($properties), $links, $embedded);
+        return new HalResource($this->convertEmbeddedResources($properties), $embeddedLinks, $embeddedResources);
     }
 
     /**
@@ -57,9 +60,11 @@ class DefaultHalResourceFactory implements HalResourceFactory
      */
     public function createLink(array $data): ?HalLink
     {
-        if (! isset($data['href'])) {
+        if (! isset($data['href']) || ! is_scalar($data['href'])) {
             return null;
         }
+
+        $href = (string) $data['href'];
 
         $array = array_replace(
             [
@@ -75,30 +80,29 @@ class DefaultHalResourceFactory implements HalResourceFactory
         );
 
         $array = array_map(
-            static function ($entry) {
-                return is_array($entry) || is_object($entry) ? null : $entry;
-            },
+            static fn ($entry): mixed => is_array($entry) || is_object($entry) ? null : $entry,
             $array
         );
 
         return new HalLink(
-            $array['href'],
-            $array['templated'],
-            $array['type'],
-            $array['deprecation'],
-            $array['name'],
-            $array['profile'],
-            $array['title'],
-            $array['hreflang']
+            $href,
+            $array['templated'] !== null ? (bool) $array['templated'] : null,
+            is_scalar($array['type']) ? (string) $array['type'] : null,
+            is_scalar($array['deprecation']) ? (string) $array['deprecation'] : null,
+            is_scalar($array['name']) ? (string) $array['name'] : null,
+            is_scalar($array['profile']) ? (string) $array['profile'] : null,
+            is_scalar($array['title']) ? (string) $array['title'] : null,
+            is_scalar($array['hreflang']) ? (string) $array['hreflang'] : null
         );
     }
 
     /**
      * Normalizes the given data.
      *
-     * @param mixed $data The data to normalize
+     * @param mixed                                    $data            The data to normalize
+     * @param callable(mixed): array<array-key, mixed> $arrayNormalizer
      *
-     * @return array<int, mixed>
+     * @return array<array-key, mixed>
      */
     private function normalizeData(mixed $data, callable $arrayNormalizer): array
     {
@@ -123,9 +127,7 @@ class DefaultHalResourceFactory implements HalResourceFactory
 
         return array_filter(
             $data,
-            static function ($entry) {
-                return $entry !== null;
-            }
+            static fn ($entry): bool => $entry !== null
         );
     }
 
@@ -143,10 +145,16 @@ class DefaultHalResourceFactory implements HalResourceFactory
                 continue;
             }
 
-            if (isset($value['_links']) || isset($value['_embedded'])) {
-                $array[$key] = $this->createResource($value);
+            $data = [];
+
+            foreach ($value as $subkey => $subvalue) {
+                $data[(string) $subkey] = $subvalue;
+            }
+
+            if (isset($data['_links']) || isset($data['_embedded'])) {
+                $array[$key] = $this->createResource($data);
             } else {
-                $array[$key] = $this->convertEmbeddedResources($value);
+                $array[$key] = $this->convertEmbeddedResources($data);
             }
         }
 

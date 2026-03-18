@@ -10,7 +10,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getUri method returns the correct URI when the link is not templated.
      */
-    public function testGetUriReturnsCorrectUriWhenNotTemplated(): void
+    public function test_get_uri_returns_correct_uri_when_not_templated(): void
     {
         $link = new HalLink('https://example.com/resource');
 
@@ -22,7 +22,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getUri method correctly expands the URI template when the link is templated.
      */
-    public function testGetUriExpandsUriTemplateWhenTemplated(): void
+    public function test_get_uri_expands_uri_template_when_templated(): void
     {
         $link = new HalLink('https://example.com/resource{?id}', true);
 
@@ -34,7 +34,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getUri method handles URI templates with multiple variables.
      */
-    public function testGetUriHandlesMultipleTemplateVariables(): void
+    public function test_get_uri_handles_multiple_template_variables(): void
     {
         $link = new HalLink('https://example.com/resource{?id,type}', true);
 
@@ -46,7 +46,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getUri method returns the base URI when no variables are passed for a templated link.
      */
-    public function testGetUriReturnsBaseUriWhenNoVariablesPassed(): void
+    public function test_get_uri_returns_base_uri_when_no_variables_passed(): void
     {
         $link = new HalLink('https://example.com/resource{?id}', true);
 
@@ -58,7 +58,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getUri method returns the base URI when the link is templated but empty variables are passed.
      */
-    public function testGetUriReturnsBaseUriWhenEmptyVariablesPassed(): void
+    public function test_get_uri_returns_base_uri_when_empty_variables_passed(): void
     {
         $link = new HalLink('https://example.com/resource{?id}', true);
 
@@ -66,10 +66,11 @@ class HalLinkTest extends TestCase
 
         $this->assertSame('https://example.com/resource', $uri);
     }
+
     /**
      * Tests that the toArray method includes all non-null properties.
      */
-    public function testToArrayIncludesAllNonNullProperties(): void
+    public function test_to_array_includes_all_non_null_properties(): void
     {
         $link = new HalLink(
             'https://example.com',
@@ -99,7 +100,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the toArray method skips null properties.
      */
-    public function testToArraySkipsNullProperties(): void
+    public function test_to_array_skips_null_properties(): void
     {
         $link = new HalLink('https://example.com');
 
@@ -113,7 +114,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the toArray method works correctly with only some properties set.
      */
-    public function testToArrayHandlesPartialProperties(): void
+    public function test_to_array_handles_partial_properties(): void
     {
         $link = new HalLink(
             'https://example.com',
@@ -122,8 +123,7 @@ class HalLinkTest extends TestCase
             null,
             null,
             null,
-            'Example Title',
-            null
+            'Example Title'
         );
 
         $expectedArray = [
@@ -138,7 +138,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getHref method returns the href correctly.
      */
-    public function testGetHrefReturnsCorrectHref(): void
+    public function test_get_href_returns_correct_href(): void
     {
         $link = new HalLink('https://example.com/resource');
 
@@ -148,7 +148,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that the getHref method reflects updates made by the setHref method.
      */
-    public function testGetHrefUpdatesOnSetHref(): void
+    public function test_get_href_updates_on_set_href(): void
     {
         $link = new HalLink('https://example.com/resource');
         $link->setHref('https://new.example.com/resource');
@@ -159,7 +159,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isTemplated returns true when templated is set to true.
      */
-    public function testIsTemplatedReturnsTrueWhenTemplated(): void
+    public function test_is_templated_returns_true_when_templated(): void
     {
         $link = new HalLink('https://example.com/resource', true);
 
@@ -169,7 +169,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isTemplated returns false when templated is set to false.
      */
-    public function testIsTemplatedReturnsFalseWhenNotTemplated(): void
+    public function test_is_templated_returns_false_when_not_templated(): void
     {
         $link = new HalLink('https://example.com/resource', false);
 
@@ -179,16 +179,17 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isTemplated returns false when templated is null.
      */
-    public function testIsTemplatedReturnsFalseWhenTemplatedIsNull(): void
+    public function test_is_templated_returns_false_when_templated_is_null(): void
     {
-        $link = new HalLink('https://example.com/resource', null);
+        $link = new HalLink('https://example.com/resource');
 
         $this->assertFalse($link->isTemplated());
     }
+
     /**
      * Tests that setTemplated correctly updates the templated property to true.
      */
-    public function testSetTemplatedUpdatesToTrue(): void
+    public function test_set_templated_updates_to_true(): void
     {
         $link = new HalLink('https://example.com', false);
         $link->setTemplated(true);
@@ -199,7 +200,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isDeprecated returns true when deprecation is set with a non-empty string.
      */
-    public function testIsDeprecatedReturnsTrueWhenDeprecatedIsNotEmpty(): void
+    public function test_is_deprecated_returns_true_when_deprecated_is_not_empty(): void
     {
         $link = new HalLink('https://example.com', null, null, 'https://example.com/deprecated');
 
@@ -209,7 +210,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isDeprecated returns false when deprecation is an empty string.
      */
-    public function testIsDeprecatedReturnsFalseWhenDeprecatedIsEmptyString(): void
+    public function test_is_deprecated_returns_false_when_deprecated_is_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, '');
 
@@ -219,7 +220,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that isDeprecated returns false when deprecation is null.
      */
-    public function testIsDeprecatedReturnsFalseWhenDeprecatedIsNull(): void
+    public function test_is_deprecated_returns_false_when_deprecated_is_null(): void
     {
         $link = new HalLink('https://example.com');
 
@@ -229,7 +230,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setTemplated correctly updates the templated property to false.
      */
-    public function testSetTemplatedUpdatesToFalse(): void
+    public function test_set_templated_updates_to_false(): void
     {
         $link = new HalLink('https://example.com', true);
         $link->setTemplated(false);
@@ -240,17 +241,18 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setTemplated correctly updates the templated property to null.
      */
-    public function testSetTemplatedUpdatesToNull(): void
+    public function test_set_templated_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', true);
         $link->setTemplated(null);
 
         $this->assertFalse($link->isTemplated());
     }
+
     /**
      * Tests that getType returns null when type is not set.
      */
-    public function testGetTypeReturnsNullWhenNotSet(): void
+    public function test_get_type_returns_null_when_not_set(): void
     {
         $link = new HalLink('https://example.com');
 
@@ -260,7 +262,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that getType returns the correct type when type is set.
      */
-    public function testGetTypeReturnsCorrectType(): void
+    public function test_get_type_returns_correct_type(): void
     {
         $link = new HalLink('https://example.com', true, 'application/json');
 
@@ -270,7 +272,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that getType reflects changes made by setType.
      */
-    public function testGetTypeReflectsChangesOnSetType(): void
+    public function test_get_type_reflects_changes_on_set_type(): void
     {
         $link = new HalLink('https://example.com', true);
         $link->setType('application/xml');
@@ -281,7 +283,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that getDeprecation returns the correct deprecation URL when set.
      */
-    public function testGetDeprecationReturnsCorrectValueWhenSet(): void
+    public function test_get_deprecation_returns_correct_value_when_set(): void
     {
         $link = new HalLink('https://example.com', null, null, 'https://example.com/deprecated');
 
@@ -291,7 +293,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that getDeprecation returns null when deprecation is not set.
      */
-    public function testGetDeprecationReturnsNullWhenNotSet(): void
+    public function test_get_deprecation_returns_null_when_not_set(): void
     {
         $link = new HalLink('https://example.com');
 
@@ -301,16 +303,17 @@ class HalLinkTest extends TestCase
     /**
      * Tests that getDeprecation returns an empty string when deprecation is set to an empty string.
      */
-    public function testGetDeprecationReturnsEmptyStringWhenSetToEmpty(): void
+    public function test_get_deprecation_returns_empty_string_when_set_to_empty(): void
     {
         $link = new HalLink('https://example.com', null, null, '');
 
         $this->assertSame('', $link->getDeprecation());
     }
+
     /**
      * Tests that setDeprecation correctly updates the deprecation property to a non-null string.
      */
-    public function testSetDeprecationUpdatesToNonNullString(): void
+    public function test_set_deprecation_updates_to_non_null_string(): void
     {
         $link = new HalLink('https://example.com');
         $link->setDeprecation('https://example.com/deprecated');
@@ -321,7 +324,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setDeprecation correctly updates the deprecation property to null.
      */
-    public function testSetDeprecationUpdatesToNull(): void
+    public function test_set_deprecation_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', null, null, 'https://example.com/deprecated');
         $link->setDeprecation(null);
@@ -332,7 +335,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setDeprecation correctly updates the deprecation property to an empty string.
      */
-    public function testSetDeprecationUpdatesToEmptyString(): void
+    public function test_set_deprecation_updates_to_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, 'https://example.com/deprecated');
         $link->setDeprecation('');
@@ -343,7 +346,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setName correctly updates the name property to a non-null string.
      */
-    public function testSetNameUpdatesToNonNullString(): void
+    public function test_set_name_updates_to_non_null_string(): void
     {
         $link = new HalLink('https://example.com');
         $link->setName('example-name');
@@ -354,7 +357,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setName correctly updates the name property to null.
      */
-    public function testSetNameUpdatesToNull(): void
+    public function test_set_name_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', null, null, null, 'example-name');
         $link->setName(null);
@@ -365,17 +368,18 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setName correctly updates the name property to an empty string.
      */
-    public function testSetNameUpdatesToEmptyString(): void
+    public function test_set_name_updates_to_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, null, 'example-name');
         $link->setName('');
 
         $this->assertSame('', $link->getName());
     }
+
     /**
      * Tests that setProfile correctly updates the profile property to a non-null string.
      */
-    public function testSetProfileUpdatesToNonNullString(): void
+    public function test_set_profile_updates_to_non_null_string(): void
     {
         $link = new HalLink('https://example.com');
         $link->setProfile('https://example.com/profile');
@@ -386,7 +390,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setProfile correctly updates the profile property to null.
      */
-    public function testSetProfileUpdatesToNull(): void
+    public function test_set_profile_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, 'https://example.com/profile');
         $link->setProfile(null);
@@ -397,7 +401,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setProfile correctly updates the profile property to an empty string.
      */
-    public function testSetProfileUpdatesToEmptyString(): void
+    public function test_set_profile_updates_to_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, 'https://example.com/profile');
         $link->setProfile('');
@@ -408,7 +412,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setTitle correctly updates the title property to a non-null string.
      */
-    public function testSetTitleUpdatesToNonNullString(): void
+    public function test_set_title_updates_to_non_null_string(): void
     {
         $link = new HalLink('https://example.com');
         $link->setTitle('Example Title');
@@ -419,7 +423,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setTitle correctly updates the title property to null.
      */
-    public function testSetTitleUpdatesToNull(): void
+    public function test_set_title_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, null, 'Example Title');
         $link->setTitle(null);
@@ -430,17 +434,18 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setTitle correctly updates the title property to an empty string.
      */
-    public function testSetTitleUpdatesToEmptyString(): void
+    public function test_set_title_updates_to_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, null, 'Example Title');
         $link->setTitle('');
 
         $this->assertSame('', $link->getTitle());
     }
+
     /**
      * Tests that setHreflang correctly updates the hreflang property to a non-null string.
      */
-    public function testSetHreflangUpdatesToNonNullString(): void
+    public function test_set_hreflang_updates_to_non_null_string(): void
     {
         $link = new HalLink('https://example.com');
         $link->setHreflang('en');
@@ -451,7 +456,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setHreflang correctly updates the hreflang property to null.
      */
-    public function testSetHreflangUpdatesToNull(): void
+    public function test_set_hreflang_updates_to_null(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, null, null, 'en');
         $link->setHreflang(null);
@@ -462,7 +467,7 @@ class HalLinkTest extends TestCase
     /**
      * Tests that setHreflang correctly updates the hreflang property to an empty string.
      */
-    public function testSetHreflangUpdatesToEmptyString(): void
+    public function test_set_hreflang_updates_to_empty_string(): void
     {
         $link = new HalLink('https://example.com', null, null, null, null, null, null, 'en');
         $link->setHreflang('');
